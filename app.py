@@ -3,6 +3,7 @@ import sys
 import time
 import gradio as gr
 from videocrafter_test import Text2Video
+sys.path.insert(1, os.path.join(sys.path[0], 'lvdm'))
 
 def videocrafter_demo(result_dir='./tmp/'):
     text2video = Text2Video(result_dir)

@@ -12,7 +12,7 @@ def videocrafter_demo(result_dir='./tmp/'):
             with gr.Tab(label="VideoCrafter"):
                 input_text = gr.Text()
                 model_choices=['origin','vangogh','frozen','yourname', 'coco']
-                trigger_word_list=['','Loving Vincent style', 'frozenmovie style', 'MakotoShinkaiYourName style', 'coco style']
+                trigger_word_list=[' ','Loving Vincent style', 'frozenmovie style', 'MakotoShinkaiYourName style', 'coco style']
 
                 with gr.Row():
                     model_index = gr.Dropdown(label='Models', elem_id=f"model", choices=model_choices, value=model_choices[0], type="index",interactive=True)

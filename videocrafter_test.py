@@ -42,7 +42,7 @@ class Text2Video():
                                 'models/videolora/lora_002_frozenmovie_style.ckpt',
                                 'models/videolora/lora_003_MakotoShinkaiYourName_style.ckpt',
                                 'models/videolora/lora_004_coco_style.ckpt']
-
+        self.lora_trigger_word_list = ['','Loving Vincent style', 'frozenmovie style', 'MakotoShinkaiYourName style', 'coco style']
         model, _, _ = load_model(config, ckpt_path, gpu_id=0, inject_lora=False)
         self.model = model
         self.last_time_lora = ''
@@ -52,9 +52,9 @@ class Text2Video():
         self.ddim_sampler = DDIMSampler(model) 
         self.origin_weight = None
 
-    def get_prompt(self, input_text, steps=50, model_index=0, eta=1.0, cfg_scale=15.0, lora_scale=1.0, trigger_word=''):
-        if trigger_word !=' ':
-            input_text = input_text + ', ' + trigger_word
+    def get_prompt(self, input_text, steps=50, model_index=0, eta=1.0, cfg_scale=15.0, lora_scale=1.0):
+        if model_index > 0:
+            input_text = input_text + ', ' + self.lora_trigger_word_list[model_index]
         inject_lora = model_index > 0
         self.origin_weight = change_lora_v2(self.model, inject_lora=inject_lora, lora_scale=lora_scale, lora_path=self.lora_path_list[model_index],
                     last_time_lora=self.last_time_lora, last_time_lora_scale=self.last_time_lora_scale, origin_weight=self.origin_weight)

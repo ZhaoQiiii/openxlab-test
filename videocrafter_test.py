@@ -33,7 +33,7 @@ class Text2Video():
         self.lora_path_list = ['','models/videolora/lora_001_Loving_Vincent_style.ckpt',
                                 'models/videolora/lora_002_frozenmovie_style.ckpt',
                                 'models/videolora/lora_003_MakotoShinkaiYourName_style.ckpt',
-                                'models/videolora/lora_004_coco_style.ckpt']
+                                'models/videolora/lora_004_coco_style_v2.ckpt']
         self.lora_trigger_word_list = ['','Loving Vincent style', 'frozenmovie style', 'MakotoShinkaiYourName style', 'coco style']
         model, _, _ = load_model(config, ckpt_path, gpu_id=0, inject_lora=False)
         self.model = model

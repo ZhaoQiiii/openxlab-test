@@ -70,7 +70,7 @@ class Text2Video():
                         'models/videolora/lora_001_Loving_Vincent_style.ckpt',
                         'models/videolora/lora_002_frozenmovie_style.ckpt',
                         'models/videolora/lora_003_MakotoShinkaiYourName_style.ckpt',
-                        'models/videolora/lora_004_coco_style.ckpt']
+                        'models/videolora/lora_004_coco_style_v2.ckpt']
         for filename in filename_list:
             if not os.path.exists(filename):
                 hf_hub_download(repo_id=REPO_ID, filename=filename, local_dir='./', local_dir_use_symlinks=False)

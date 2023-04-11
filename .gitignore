@@ -1,7 +1,10 @@
 .DS_Store
 *pyc
+.vscode
 __pycache__
 *.egg-info
 
 results
 *.ckpt
+*.pt
+*.pth

@@ -6,7 +6,7 @@ class Text2Video():
 
         return '01.mp4'
     
-class VideoContorl:
+class VideoControl:
     def __init__(self) -> None:
         pass
 

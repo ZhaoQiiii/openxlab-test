@@ -1,7 +1,8 @@
 import os
 import sys
 import gradio as gr
-from demo_test import Text2Video, VideoContorl
+from videocrafter_test import Text2Video
+from videocontrol_test import VideoControl
 sys.path.insert(1, os.path.join(sys.path[0], 'lvdm'))
 
 t2v_examples = [
@@ -14,12 +15,12 @@ t2v_examples = [
 ]
 
 control_examples = [
-    ['01.mp4', 'a dog', 0, 50, 15, 1]
+    ['input/flamingo.mp4', 'An ostrich walking in the desert, photorealistic, 4k', 0, 50, 15, 1]
 ]
 
 def videocrafter_demo(result_dir='./tmp/'):
     text2video = Text2Video(result_dir)
-    videocontrol = VideoContorl()
+    videocontrol = VideoControl(result_dir)
     with gr.Blocks(analytics_enabled=False) as videocrafter_iface:
         gr.Markdown("<div align='center'> <h2> VideoCrafter: A Toolkit for Text-to-Video Generation and Editing </span> </h2> \
                      <a style='font-size:18px;color: #efefef' href='https://github.com/VideoCrafter/VideoCrafter'> Github </div>")
@@ -89,4 +90,5 @@ def videocrafter_demo(result_dir='./tmp/'):
 if __name__ == "__main__":
     result_dir = os.path.join('./', 'results')
     videocrafter_iface = videocrafter_demo(result_dir)
-    videocrafter_iface.launch(server_name='0.0.0.0', server_port=80)
+    videocrafter_iface.launch()
+    # videocrafter_iface.launch(server_name='0.0.0.0', server_port=80)

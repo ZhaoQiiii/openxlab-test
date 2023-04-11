@@ -114,7 +114,7 @@ class VideoControl:
     def download_model(self):
         REPO_ID = 'VideoCrafter/t2v-version-1-1'
         filename_list = ['models/base_t2v/model.ckpt',
-                         "models/adapter_t2v_depth/adapter.pth"
+                         "models/adapter_t2v_depth/adapter.pth",
                          "models/adapter_t2v_depth/dpt_hybrid-midas.pt"
                         ]
         for filename in filename_list:

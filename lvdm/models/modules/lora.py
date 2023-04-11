@@ -622,7 +622,7 @@ def net_load_lora(net, checkpoint_path, alpha=1.0, remove=False):
     state_dict = torch.load(checkpoint_path)
     for k, v in state_dict.items():
         state_dict[k] = v.to(net.device)
-    # import pdb;pdb.set_trace()
+
     for key in state_dict:
         if ".alpha" in key or key in visited:
             continue
@@ -685,7 +685,7 @@ def net_load_lora_v2(net, checkpoint_path, alpha=1.0, remove=False, origin_weigh
     state_dict = torch.load(checkpoint_path)
     for k, v in state_dict.items():
         state_dict[k] = v.to(net.device)
-    # import pdb;pdb.set_trace()
+
     for key in state_dict:
         if ".alpha" in key or key in visited:
             continue

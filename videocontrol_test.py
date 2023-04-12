@@ -70,7 +70,7 @@ class VideoControl:
             h, w, c = VideoReader(input_video, ctx=cpu(0))[0].shape
         except:
             os.remove(input_video)
-            return 'please input video', None
+            return 'please input video', None, None, None
 
         if h < w:
             scale = h / self.resolution
@@ -82,7 +82,7 @@ class VideoControl:
             video, info_str = load_video(input_video, frame_stride, video_size=(h, w), video_frames=16)
         except:
             os.remove(input_video)
-            return 'load video error', None 
+            return 'load video error', None, None, None
         video = self.spatial_transform(video)
         print('video shape', video.shape)
 
@@ -103,14 +103,23 @@ class VideoControl:
         filename = prompt
         filename = filename.replace("/", "_slash_") if "/" in filename else filename
         filename = filename.replace(" ", "_") if " " in filename else filename
+        if len(filename) > 200:
+            filename = filename[:200]
         video_path = os.path.join(self.savedir, f'{filename}_sample.mp4')
-        # tensor_to_mp4(video=batch_conds.detach().cpu(), savepath=os.path.join(self.savedir, f'{filename}_depth.mp4'), fps=10)
-        tensor_to_mp4(video=batch_samples.detach().cpu(), savepath=os.path.join(self.savedir, f'{filename}_sample.mp4'), fps=8)
+        depth_path = os.path.join(self.savedir, f'{filename}_depth.mp4')
+        origin_path = os.path.join(self.savedir, f'{filename}.mp4')
+        tensor_to_mp4(video=video.detach().cpu(), savepath=origin_path, fps=8)
+        tensor_to_mp4(video=batch_conds.detach().cpu(), savepath=depth_path, fps=8)
+        tensor_to_mp4(video=batch_samples.detach().cpu(), savepath=video_path, fps=8)
 
         print(f"Saved in {video_path}. Time used: {(time.time() - start):.2f} seconds")
         # delete video
-        os.remove(input_video)
-        return info_str, video_path
+        (path, input_filename) = os.path.split(input_video)
+        if input_filename != 'flamingo.mp4':
+            os.remove(input_video)
+            print('delete input video')
+        # print(input_video)
+        return info_str, origin_path, depth_path, video_path
     def download_model(self):
         REPO_ID = 'VideoCrafter/t2v-version-1-1'
         filename_list = ['models/base_t2v/model.ckpt',

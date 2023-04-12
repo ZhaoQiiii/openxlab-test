@@ -40,7 +40,7 @@ def videocrafter_demo(result_dir='./tmp/'):
                             lora_scale = gr.Slider(minimum=0.0, maximum=2.0, step=0.1, label='Lora Scale', value=1.0, elem_id="lora_scale")
                             cfg_scale = gr.Slider(minimum=1.0, maximum=30.0, step=0.5, label='CFG Scale', value=15.0, elem_id="cfg_scale")
                         send_btn = gr.Button("Send")
-                    with gr.Tab(label='show'):
+                    with gr.Tab(label='result'):
                         output_video_1 =  gr.Video().style(width=384)
                 gr.Examples(examples=t2v_examples,
                             inputs=[input_text,steps,model_index,eta,cfg_scale,lora_scale],
@@ -59,7 +59,9 @@ def videocrafter_demo(result_dir='./tmp/'):
                 with gr.Row():
                     # with gr.Tab(label='input'):
                     with gr.Column():
-                        vc_input_video = gr.Video().style(width=256)
+                        with gr.Row():
+                            vc_input_video = gr.Video(label="Input Video").style(width=256)
+                            vc_origin_video = gr.Video(label='Center-cropped Video').style(width=256)
                         with gr.Row():
                             vc_input_text = gr.Text(label='Prompts')
                         with gr.Row():
@@ -72,16 +74,18 @@ def videocrafter_demo(result_dir='./tmp/'):
                         vc_end_btn = gr.Button("Send")
                     with gr.Tab(label='Result'):
                         vc_output_info = gr.Text(label='Info')
-                        vc_output_video = gr.Video().style(width=384)
+                        with gr.Row():
+                            vc_depth_video = gr.Video(label="Depth Video").style(width=256)
+                            vc_output_video = gr.Video(label="Generated Video").style(width=256)
 
                 gr.Examples(examples=control_examples,
                             inputs=[vc_input_video, vc_input_text, frame_stride, vc_steps, vc_cfg_scale, vc_eta],
-                            outputs=[vc_output_info, vc_output_video],
+                            outputs=[vc_output_info, vc_origin_video, vc_depth_video, vc_output_video],
                             fn = videocontrol.get_video,
-                            cache_examples=False
+                            cache_examples=os.getenv('SYSTEM') == 'spaces',
                 )
             vc_end_btn.click(inputs=[vc_input_video, vc_input_text, frame_stride, vc_steps, vc_cfg_scale, vc_eta],
-                            outputs=[vc_output_info, vc_output_video],
+                            outputs=[vc_output_info, vc_origin_video, vc_depth_video, vc_output_video],
                             fn = videocontrol.get_video
             )
 

@@ -19,8 +19,8 @@ def save_results(videos, save_dir,
         npz_to_video_grid(videos[i:i+1,...], 
                             os.path.join(save_subdir, f"{save_name}_{i:03d}.mp4"), 
                             fps=save_fps)
-    print(f'Successfully saved videos in {save_subdir}')
     video_path_list = [os.path.join(save_subdir, f"{save_name}_{i:03d}.mp4") for i in range(videos.shape[0])]
+    print(f'Successfully saved videos in {video_path_list[0]}')
     return video_path_list
     
 
@@ -45,6 +45,8 @@ class Text2Video():
         self.origin_weight = None
 
     def get_prompt(self, input_text, steps=50, model_index=0, eta=1.0, cfg_scale=15.0, lora_scale=1.0):
+        if steps > 60:
+            steps = 60 
         if model_index > 0:
             input_text = input_text + ', ' + self.lora_trigger_word_list[model_index]
         inject_lora = model_index > 0

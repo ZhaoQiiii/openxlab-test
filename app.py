@@ -34,7 +34,7 @@ def videocrafter_demo(result_dir='./tmp/'):
                         with gr.Row():
                             model_index = gr.Dropdown(label='Models', elem_id=f"model", choices=model_choices, value=model_choices[0], type="index",interactive=True)
                         with gr.Row():
-                            steps = gr.Slider(minimum=1, maximum=200, step=1, elem_id=f"steps", label="Sampling steps", value=50)
+                            steps = gr.Slider(minimum=1, maximum=60, step=1, elem_id=f"steps", label="Sampling steps", value=50)
                             eta = gr.Slider(minimum=0.0, maximum=1.0, step=0.1, label='ETA', value=1.0, elem_id="eta")
                         with gr.Row():
                             lora_scale = gr.Slider(minimum=0.0, maximum=2.0, step=0.1, label='Lora Scale', value=1.0, elem_id="lora_scale")
@@ -68,7 +68,7 @@ def videocrafter_demo(result_dir='./tmp/'):
                             vc_eta = gr.Slider(minimum=0.0, maximum=1.0, step=0.1, label='ETA', value=1.0, elem_id="vc_eta")
                             vc_cfg_scale = gr.Slider(minimum=1.0, maximum=30.0, step=0.5, label='CFG Scale', value=15.0, elem_id="vc_cfg_scale")
                         with gr.Row():
-                            vc_steps = gr.Slider(minimum=1, maximum=200, step=1, elem_id="vc_steps", label="Sampling steps", value=50)
+                            vc_steps = gr.Slider(minimum=1, maximum=60, step=1, elem_id="vc_steps", label="Sampling steps", value=50)
                             frame_stride = gr.Slider(minimum=0 , maximum=100, step=1, label='Frame Stride', value=0, elem_id="vc_frame_stride")
 
                         vc_end_btn = gr.Button("Send")

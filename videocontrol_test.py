@@ -63,6 +63,8 @@ class VideoControl:
         self.spatial_transform = transforms_video.CenterCropVideo(self.resolution)
 
     def get_video(self, input_video, input_prompt, frame_stride=0, vc_steps=50, vc_cfg_scale=15.0, vc_eta=1.0):
+        if vc_steps > 60:
+            vc_steps = 60
         ## load video
         print("input video", input_video)
         info_str = ''

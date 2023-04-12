@@ -31,9 +31,9 @@ def load_video(filepath, frame_stride, video_size=(256,256), video_frames=16):
         frame_stride = max_frames / video_frames 
         # if temp_stride < 1:
             # info_str = "Warning: The length of the current input video is less than 16 frames, we will automatically fill to 16 frames for you.\n"
-    if frame_stride > 8:
-        frame_stride = 8
-        info_str += "Warning: The current input video length is longer than 128 frames, we will process only the first 128 frames.\n"
+    if frame_stride > 100:
+        frame_stride = 100
+        info_str += "Warning: The current input video length is longer than 1600 frames, we will process only the first 1600 frames.\n"
     info_str += f"Frame Stride is set to {frame_stride}"
     frame_indices = [int(frame_stride*i) for i in range(video_frames)]
     frames = vidreader.get_batch(frame_indices)

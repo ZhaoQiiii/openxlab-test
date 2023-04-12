@@ -69,7 +69,7 @@ def videocrafter_demo(result_dir='./tmp/'):
                             vc_cfg_scale = gr.Slider(minimum=1.0, maximum=30.0, step=0.5, label='CFG Scale', value=15.0, elem_id="vc_cfg_scale")
                         with gr.Row():
                             vc_steps = gr.Slider(minimum=1, maximum=200, step=1, elem_id="vc_steps", label="Sampling steps", value=50)
-                            frame_stride = gr.Slider(minimum=0 , maximum=8, step=1, label='Frame Stride', value=0, elem_id="vc_frame_stride")
+                            frame_stride = gr.Slider(minimum=0 , maximum=100, step=1, label='Frame Stride', value=0, elem_id="vc_frame_stride")
 
                         vc_end_btn = gr.Button("Send")
                     with gr.Tab(label='Result'):
@@ -94,5 +94,6 @@ def videocrafter_demo(result_dir='./tmp/'):
 if __name__ == "__main__":
     result_dir = os.path.join('./', 'results')
     videocrafter_iface = videocrafter_demo(result_dir)
+    videocrafter_iface.queue(concurrency_count=1, max_size=10)
     videocrafter_iface.launch()
     # videocrafter_iface.launch(server_name='0.0.0.0', server_port=80)

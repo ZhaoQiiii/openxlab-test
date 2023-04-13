@@ -50,7 +50,8 @@ class VideoControl:
         config_path = "models/adapter_t2v_depth/model_config.yaml"
         ckpt_path = "models/base_t2v/model.ckpt"
         adapter_ckpt = "models/adapter_t2v_depth/adapter.pth"
-
+        if os.path.exists('/dev/shm/model.ckpt'):
+            ckpt_path='/dev/shm/model.ckpt'
         config = OmegaConf.load(config_path)
         model_config = config.pop("model", OmegaConf.create())
         model = instantiate_from_config(model_config)
@@ -59,10 +60,18 @@ class VideoControl:
         model = load_model_checkpoint(model, ckpt_path, adapter_ckpt)
         model.eval()
         self.model = model
-        self.resolution=256
-        self.spatial_transform = transforms_video.CenterCropVideo(self.resolution)
 
-    def get_video(self, input_video, input_prompt, frame_stride=0, vc_steps=50, vc_cfg_scale=15.0, vc_eta=1.0):
+    def get_video(self, input_video, input_prompt, frame_stride=0, vc_steps=50, vc_cfg_scale=15.0, vc_eta=1.0, video_frames=16, resolution=256):
+        torch.cuda.empty_cache()
+        if resolution > 512:
+            resolution = 512
+        if resolution < 64:
+            resolution = 64
+        if video_frames > 64:
+            video_frames = 64
+        
+        resolution = int(resolution//64)*64
+        
         if vc_steps > 60:
             vc_steps = 60
         ## load video
@@ -74,32 +83,43 @@ class VideoControl:
             os.remove(input_video)
             return 'please input video', None, None, None
 
-        if h < w:
-            scale = h / self.resolution
+        if h > w:
+            scale = h / resolution
         else:
-            scale = w / self.resolution
+            scale = w / resolution
         h = math.ceil(h / scale)
         w = math.ceil(w / scale)
         try:
-            video, info_str = load_video(input_video, frame_stride, video_size=(h, w), video_frames=16)
+            video, info_str = load_video(input_video, frame_stride, video_size=(h, w), video_frames=video_frames)
         except:
             os.remove(input_video)
             return 'load video error', None, None, None
-        video = self.spatial_transform(video)
+        if h > w:
+            w = int(w//64)*64
+        else:
+            h = int(h//64)*64
+        spatial_transform = transforms_video.CenterCropVideo((h,w))
+        video = spatial_transform(video)
         print('video shape', video.shape)
 
-        h, w = 32, 32
+        rh, rw = h//8, w//8
         bs = 1
         channels = self.model.channels
-        frames = self.model.temporal_length
-        noise_shape = [bs, channels, frames, h, w]
+        # frames = self.model.temporal_length
+        frames = video_frames
+        noise_shape = [bs, channels, frames, rh, rw]
         
         ## inference
         start = time.time()
         prompt = input_prompt
         video = video.unsqueeze(0).to("cuda")
-        with torch.no_grad():
-            batch_samples, batch_conds = adapter_guided_synthesis(self.model, prompt, video, noise_shape, n_samples=1, ddim_steps=vc_steps, ddim_eta=vc_eta, unconditional_guidance_scale=vc_cfg_scale)
+        try:
+            with torch.no_grad():
+                batch_samples, batch_conds = adapter_guided_synthesis(self.model, prompt, video, noise_shape, n_samples=1, ddim_steps=vc_steps, ddim_eta=vc_eta, unconditional_guidance_scale=vc_cfg_scale)
+        except:
+            torch.cuda.empty_cache()
+            info_str="OOM, please enter a smaller resolution or smaller frame num"
+            return info_str, None, None, None
         batch_samples = batch_samples[0]
         os.makedirs(self.savedir, exist_ok=True)
         filename = prompt

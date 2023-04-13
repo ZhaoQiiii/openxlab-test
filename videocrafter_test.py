@@ -1,4 +1,5 @@
 import os
+import torch
 from omegaconf import OmegaConf
 
 from lvdm.samplers.ddim import DDIMSampler
@@ -29,6 +30,8 @@ class Text2Video():
         self.download_model()
         config_file = 'models/base_t2v/model_config.yaml'
         ckpt_path = 'models/base_t2v/model.ckpt'
+        if os.path.exists('/dev/shm/model.ckpt'):
+            ckpt_path='/dev/shm/model.ckpt'
         config = OmegaConf.load(config_file)
         self.lora_path_list = ['','models/videolora/lora_001_Loving_Vincent_style.ckpt',
                                 'models/videolora/lora_002_frozenmovie_style.ckpt',
@@ -45,6 +48,7 @@ class Text2Video():
         self.origin_weight = None
 
     def get_prompt(self, input_text, steps=50, model_index=0, eta=1.0, cfg_scale=15.0, lora_scale=1.0):
+        torch.cuda.empty_cache()
         if steps > 60:
             steps = 60 
         if model_index > 0:

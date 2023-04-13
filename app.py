@@ -15,7 +15,7 @@ t2v_examples = [
 ]
 
 control_examples = [
-    ['input/flamingo.mp4', 'An ostrich walking in the desert, photorealistic, 4k', 0, 50, 15, 1]
+    ['input/flamingo.mp4', 'An ostrich walking in the desert, photorealistic, 4k', 0, 50, 15, 1, 16, 256]
 ]
 
 def videocrafter_demo(result_dir='./tmp/'):
@@ -23,7 +23,7 @@ def videocrafter_demo(result_dir='./tmp/'):
     videocontrol = VideoControl(result_dir)
     with gr.Blocks(analytics_enabled=False) as videocrafter_iface:
         gr.Markdown("<div align='center'> <h2> VideoCrafter: A Toolkit for Text-to-Video Generation and Editing </span> </h2> \
-                     <a style='font-size:18px;color: #efefef' href='https://github.com/VideoCrafter/VideoCrafter'> Github </div>")
+                     <a style='font-size:18px;color: #000000' href='https://github.com/VideoCrafter/VideoCrafter'> Github </div>")
         #######t2v#######
         with gr.Tab(label="Text2Video"):
             with gr.Column():
@@ -70,7 +70,9 @@ def videocrafter_demo(result_dir='./tmp/'):
                         with gr.Row():
                             vc_steps = gr.Slider(minimum=1, maximum=60, step=1, elem_id="vc_steps", label="Sampling steps", value=50)
                             frame_stride = gr.Slider(minimum=0 , maximum=100, step=1, label='Frame Stride', value=0, elem_id="vc_frame_stride")
-
+                        with gr.Row():
+                            resolution = gr.Slider(minimum=128 , maximum=512, step=8, label='Long Side Resolution', value=256, elem_id="vc_resolution")
+                            video_frames = gr.Slider(minimum=8 , maximum=64, step=1, label='Video Frame Num', value=16, elem_id="vc_video_frames")
                         vc_end_btn = gr.Button("Send")
                     with gr.Tab(label='Result'):
                         vc_output_info = gr.Text(label='Info')
@@ -79,12 +81,12 @@ def videocrafter_demo(result_dir='./tmp/'):
                             vc_output_video = gr.Video(label="Generated Video").style(width=256)
 
                 gr.Examples(examples=control_examples,
-                            inputs=[vc_input_video, vc_input_text, frame_stride, vc_steps, vc_cfg_scale, vc_eta],
+                            inputs=[vc_input_video, vc_input_text, frame_stride, vc_steps, vc_cfg_scale, vc_eta, video_frames, resolution],
                             outputs=[vc_output_info, vc_origin_video, vc_depth_video, vc_output_video],
                             fn = videocontrol.get_video,
                             cache_examples=os.getenv('SYSTEM') == 'spaces',
                 )
-            vc_end_btn.click(inputs=[vc_input_video, vc_input_text, frame_stride, vc_steps, vc_cfg_scale, vc_eta],
+            vc_end_btn.click(inputs=[vc_input_video, vc_input_text, frame_stride, vc_steps, vc_cfg_scale, vc_eta, video_frames, resolution],
                             outputs=[vc_output_info, vc_origin_video, vc_depth_video, vc_output_video],
                             fn = videocontrol.get_video
             )

@@ -29,9 +29,9 @@ class Text2Video():
     def __init__(self,result_dir='./tmp/') -> None:
         self.download_model()
         config_file = 'models/base_t2v/model_config.yaml'
-        ckpt_path = 'models/base_t2v/model.ckpt'
-        if os.path.exists('/dev/shm/model.ckpt'):
-            ckpt_path='/dev/shm/model.ckpt'
+        ckpt_path = 'models/base_t2v/model_rm_wtm.ckpt'
+        if os.path.exists('/dev/shm/model_rm_wtm.ckpt'):
+            ckpt_path='/dev/shm/model_rm_wtm.ckpt'
         config = OmegaConf.load(config_file)
         self.lora_path_list = ['','models/videolora/lora_001_Loving_Vincent_style.ckpt',
                                 'models/videolora/lora_002_frozenmovie_style.ckpt',
@@ -72,7 +72,7 @@ class Text2Video():
     
     def download_model(self):
         REPO_ID = 'VideoCrafter/t2v-version-1-1'
-        filename_list = ['models/base_t2v/model.ckpt',
+        filename_list = ['models/base_t2v/model_rm_wtm.ckpt',
                         'models/videolora/lora_001_Loving_Vincent_style.ckpt',
                         'models/videolora/lora_002_frozenmovie_style.ckpt',
                         'models/videolora/lora_003_MakotoShinkaiYourName_style.ckpt',

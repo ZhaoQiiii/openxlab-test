@@ -48,10 +48,10 @@ class VideoControl:
         self.savedir = result_dir
         self.download_model()
         config_path = "models/adapter_t2v_depth/model_config.yaml"
-        ckpt_path = "models/base_t2v/model.ckpt"
-        adapter_ckpt = "models/adapter_t2v_depth/adapter.pth"
-        if os.path.exists('/dev/shm/model.ckpt'):
-            ckpt_path='/dev/shm/model.ckpt'
+        ckpt_path = "models/base_t2v/model_rm_wtm.ckpt"
+        adapter_ckpt = "models/adapter_t2v_depth/adapter_t2v_depth_rm_wtm.pth"
+        if os.path.exists('/dev/shm/model_rm_wtm.ckpt'):
+            ckpt_path='/dev/shm/model_rm_wtm.ckpt'
         config = OmegaConf.load(config_path)
         model_config = config.pop("model", OmegaConf.create())
         model = instantiate_from_config(model_config)
@@ -144,8 +144,8 @@ class VideoControl:
         return info_str, origin_path, depth_path, video_path
     def download_model(self):
         REPO_ID = 'VideoCrafter/t2v-version-1-1'
-        filename_list = ['models/base_t2v/model.ckpt',
-                         "models/adapter_t2v_depth/adapter.pth",
+        filename_list = ['models/base_t2v/model_rm_wtm.ckpt',
+                         "models/adapter_t2v_depth/adapter_t2v_depth_rm_wtm.pth",
                          "models/adapter_t2v_depth/dpt_hybrid-midas.pt"
                         ]
         for filename in filename_list:
